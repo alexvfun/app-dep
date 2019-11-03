@@ -1,4 +1,6 @@
 FROM golang:alpine as builder
+ARG hello_p=:8080
+ENV HELLO_PORT=${hello_p}
 RUN mkdir /build 
 ADD . /build/
 WORKDIR /build 
