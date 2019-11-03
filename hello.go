@@ -1,10 +1,16 @@
 package main
 
 import (
-	"fmt"
 	"net/http"
 	"os"
 )
+
+func getEnv(key, fallback string) string {
+	if value, ok := os.LookupEnv(key); ok {
+		return value
+	}
+	return fallback
+}
 
 func ping(w http.ResponseWriter, r *http.Request) {
 	w.Write([]byte("pong"))
@@ -13,8 +19,7 @@ func ping(w http.ResponseWriter, r *http.Request) {
 func main() {
 	http.Handle("/", http.FileServer(http.Dir("./src")))
 	http.HandleFunc("/ping", ping)
-	fmt.Println("FOO:", os.Getenv("HELLO_PORT"))
-	if err := http.ListenAndServe(os.Getenv("HELLO_PORT"), nil); err != nil {
+	if err := http.ListenAndServe(getEnv("HELLO_PORT", ":8080"), nil); err != nil {
 		panic(err)
 	}
 }
