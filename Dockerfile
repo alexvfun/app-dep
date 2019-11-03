@@ -1,4 +1,6 @@
 FROM golang:alpine as builder
+ARG hello_p=:8080
+ENV HELLO_PORT=${hello_p}
 RUN mkdir /build 
 ADD . /build/
 WORKDIR /build 
@@ -6,4 +8,5 @@ RUN CGO_ENABLED=0 GOOS=linux go build -a -installsuffix cgo -ldflags '-extldflag
 FROM scratch
 COPY --from=builder /build/main /app/
 WORKDIR /app
+RUN apk update && apk add bash
 CMD ["./main"]
